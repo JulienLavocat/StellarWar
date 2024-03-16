@@ -2,6 +2,7 @@
 
 2D MMO inspired by Stellaris
 
-##  Folder structure
+##  Folder structure (monorepo)
 
--  `world-server` main game server, handling star systems related logic and other game mechanics
+-  `world-server` (Golang) main game server, handling star systems related logic and other game mechanics
+- `client` (Godot, GDScript) the game client

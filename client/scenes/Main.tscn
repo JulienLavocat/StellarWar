@@ -1,0 +1,127 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://scripts/world_server/galaxy.gd" type="Script" id=1]
+[ext_resource path="res://scripts/player/Camera2D.gd" type="Script" id=2]
+[ext_resource path="res://scripts/world_server/console.gd" type="Script" id=3]
+[ext_resource path="res://scripts/ui/resources_quote.gd" type="Script" id=4]
+[ext_resource path="res://scripts/ui/system_details.gd" type="Script" id=5]
+[ext_resource path="res://fonts/raleway_regular_16.tres" type="DynamicFont" id=6]
+
+[node name="Scene" type="Node2D"]
+
+[node name="Camera" type="Camera2D" parent="."]
+current = true
+zoom = Vector2( 0.5, 0.5 )
+script = ExtResource( 2 )
+
+[node name="Galaxy" type="Node2D" parent="."]
+script = ExtResource( 1 )
+
+[node name="Console" type="Node" parent="."]
+script = ExtResource( 3 )
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="SystemDetails2" type="PopupPanel" parent="UI"]
+visible = true
+margin_left = 153.0
+margin_top = 74.0
+margin_right = 896.0
+margin_bottom = 497.0
+script = ExtResource( 5 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/SystemDetails2"]
+margin_left = 16.0
+margin_top = 22.0
+margin_right = 734.0
+margin_bottom = 399.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/SystemDetails2/VBoxContainer"]
+margin_right = 718.0
+margin_bottom = 30.0
+
+[node name="SystemName" type="Label" parent="UI/SystemDetails2/VBoxContainer/VBoxContainer"]
+margin_right = 718.0
+margin_bottom = 22.0
+custom_fonts/font = ExtResource( 6 )
+align = 1
+valign = 1
+
+[node name="HSeparator" type="HSeparator" parent="UI/SystemDetails2/VBoxContainer/VBoxContainer"]
+margin_top = 26.0
+margin_right = 718.0
+margin_bottom = 30.0
+
+[node name="Resources" type="VBoxContainer" parent="UI/SystemDetails2/VBoxContainer"]
+margin_top = 34.0
+margin_bottom = 108.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Minerals" type="Label" parent="UI/SystemDetails2/VBoxContainer/Resources"]
+margin_bottom = 22.0
+custom_fonts/font = ExtResource( 6 )
+
+[node name="Energy" type="Label" parent="UI/SystemDetails2/VBoxContainer/Resources"]
+margin_top = 26.0
+margin_bottom = 48.0
+custom_fonts/font = ExtResource( 6 )
+
+[node name="Food" type="Label" parent="UI/SystemDetails2/VBoxContainer/Resources"]
+margin_top = 52.0
+margin_bottom = 74.0
+custom_fonts/font = ExtResource( 6 )
+
+[node name="Control" type="Control" parent="UI/SystemDetails2/VBoxContainer"]
+anchor_top = 0.67
+anchor_bottom = 0.704
+margin_top = 112.0
+margin_right = 718.0
+margin_bottom = 112.0
+
+[node name="ClaimSystemButton" type="Button" parent="UI/SystemDetails2/VBoxContainer/Control"]
+margin_left = 607.0
+margin_top = 2.0
+margin_right = 706.0
+margin_bottom = 22.0
+hint_tooltip = "Test ?"
+text = "Claim system"
+
+[node name="SystemDetails" type="Panel" parent="UI"]
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = 311.0
+margin_top = -90.0
+margin_right = 508.0
+margin_bottom = 89.0
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Resources" type="VBoxContainer" parent="UI"]
+margin_right = 29.0
+margin_bottom = 40.0
+script = ExtResource( 4 )
+
+[node name="Minerals" type="Label" parent="UI/Resources"]
+margin_right = 29.0
+margin_bottom = 22.0
+custom_fonts/font = ExtResource( 6 )
+
+[node name="Energy" type="Label" parent="UI/Resources"]
+margin_top = 26.0
+margin_right = 29.0
+margin_bottom = 48.0
+custom_fonts/font = ExtResource( 6 )
+
+[node name="Food" type="Label" parent="UI/Resources"]
+margin_top = 52.0
+margin_right = 29.0
+margin_bottom = 74.0
+custom_fonts/font = ExtResource( 6 )
