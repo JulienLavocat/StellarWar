@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 
-	"com.stellarwar/world-server/utils"
+	"com.stellarwar/world-server/internal/utils"
 )
 
 type StarSystem struct {

@@ -5,7 +5,7 @@ import (
 	"math"
 	"math/rand"
 
-	"com.stellarwar/world-server/utils"
+	"com.stellarwar/world-server/internal/utils"
 	"github.com/fogleman/poissondisc"
 	"github.com/kyroy/kdtree"
 	"github.com/kyroy/kdtree/points"

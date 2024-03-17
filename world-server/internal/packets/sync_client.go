@@ -1,6 +1,6 @@
 package packets
 
-import "com.stellarwar/world-server/galaxy"
+import "com.stellarwar/world-server/internal/galaxy"
 
 type PublicClientPayload struct {
 	Id             int32  `json:"id"`

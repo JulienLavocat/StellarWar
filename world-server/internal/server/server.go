@@ -2,11 +2,12 @@ package server
 
 import (
 	"encoding/json"
+	"log"
 	"sync"
 
-	"com.stellarwar/world-server/galaxy"
-	"com.stellarwar/world-server/packets"
-	"github.com/gorilla/websocket"
+	"com.stellarwar/world-server/internal/galaxy"
+	"com.stellarwar/world-server/internal/packets"
+	"github.com/olahol/melody"
 )
 
 var (
@@ -14,13 +15,17 @@ var (
 	nextPlayerId = int32(0)
 )
 
-type CommandHandler func(server *Server, client *Player, packet Packet)
-type ClientMessage struct {
-	id      int32
-	message []byte
-}
+type (
+	CommandHandler func(server *Server, client *Player, packet Packet)
+	ClientMessage  struct {
+		message []byte
+		id      int32
+	}
+)
 
 type Server struct {
+	m *melody.Melody
+
 	Galaxy galaxy.Galaxy
 
 	players  map[int32]*Player
@@ -48,24 +53,31 @@ func NewServer(galaxy galaxy.Galaxy) Server {
 	return server
 }
 
-func (s *Server) CreatePlayer(c *websocket.Conn) *Player {
+func (s *Server) CreatePlayer(peer *Peer) *Player {
 	var playerId int32
 	mu.Lock()
 	playerId = nextPlayerId
 	nextPlayerId++
 	mu.Unlock()
 
-	player := NewPlayer(playerId, s, c)
+	player := NewPlayer(playerId, s, peer)
 	s.players[player.Id] = player
 	s.register <- player
 	return player
 }
 
-func (s *Server) BroadcastToAll(packet Packet) {
-	for _, p := range s.players {
-		p.send <- packet
-	}
+func (s *Server) HandleDisconnect(playerId int32) {
+	s.unregister <- playerId
 }
+
+func (s *Server) BroadcastToAll(packet Packet) {
+	result, err := packet.Marshall()
+	if err != nil {
+		log.Fatal(err)
+	}
+	s.m.Broadcast(result)
+}
+
 func (s *Server) BroadcastToOthers(sender int32, packet Packet) {
 	for _, p := range s.players {
 		if p.Id == sender {
@@ -141,7 +153,7 @@ func SetReadyhandler(s *Server, player *Player, packet Packet) {
 		}
 	}
 
-	player.Send(Packet{
+	player.peer.Send(Packet{
 		Command: "sync_client",
 		Data: packets.SyncClientPayload{
 			Galaxy:  s.Galaxy,

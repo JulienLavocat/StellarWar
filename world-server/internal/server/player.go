@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"com.stellarwar/world-server/utils"
+	"com.stellarwar/world-server/internal/utils"
 	"github.com/gorilla/websocket"
 )
 
@@ -23,26 +23,22 @@ type Player struct {
 	ClaimedSystems []int
 
 	server *Server
-	socket *websocket.Conn
+	peer   *Peer
 
 	send chan Packet
 }
 
-func NewPlayer(playerId int32, server *Server, socket *websocket.Conn) *Player {
+func NewPlayer(playerId int32, server *Server, peer *Peer) *Player {
 	homeSystem := server.Galaxy.AssignNextHomeSystem(playerId)
 	return &Player{
 		Id:             playerId,
 		Color:          utils.RandomHSV(),
 		server:         server,
-		socket:         socket,
+		peer:           peer,
 		send:           make(chan Packet),
 		HomeSystem:     homeSystem,
 		ClaimedSystems: []int{homeSystem},
 	}
-}
-
-func (p *Player) Send(packet Packet) {
-	p.socket.WriteJSON(packet)
 }
 
 func (p *Player) ClaimSystem(systemId int) {
@@ -52,6 +48,7 @@ func (p *Player) ClaimSystem(systemId int) {
 func (p *Player) Logf(format string, v ...interface{}) {
 	log.Printf("[%d] %s", p.Id, fmt.Sprintf(format, v...))
 }
+
 func (p *Player) Log(line ...string) {
 	log.Printf("[%d] %s", p.Id, strings.Join(line, " "))
 }

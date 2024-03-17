@@ -6,17 +6,37 @@ import (
 	"os"
 	"time"
 
-	"com.stellarwar/world-server/galaxy"
-	srv "com.stellarwar/world-server/server"
-	"github.com/gorilla/websocket"
+	"com.stellarwar/world-server/internal/galaxy"
+	srv "com.stellarwar/world-server/internal/server"
+	"github.com/olahol/melody"
 )
 
-var upgrader = websocket.Upgrader{}
 var server = srv.NewServer(GenerateMap())
 
 func main() {
-	http.HandleFunc("/", Upgrade)
 	go server.Run()
+
+	m := melody.New()
+
+	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+		m.HandleRequest(w, r)
+	})
+
+	m.HandleConnect(func(s *melody.Session) {
+		player := server.CreatePlayer(srv.NewPeer(s))
+
+		s.Set("id", player.Id)
+	})
+
+	m.HandleDisconnect(func(s *melody.Session) {
+		if value, exists := s.Get("id"); exists {
+			server.HandleDisconnect(value.(int32))
+		}
+	})
+
+	m.HandleMessage(func(s *melody.Session, b []byte) {
+		// TODO: Handle
+	})
 
 	port := os.Getenv("PORT")
 	if port == "" {
