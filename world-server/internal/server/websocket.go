@@ -24,6 +24,7 @@ func NewWebsocketServer(server *Server) {
 		server: server,
 	}
 
+	http.HandleFunc("/world", wsServer.handleFetchWorld)
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		wsServer.m.HandleRequest(w, r)
 	})
@@ -63,4 +64,18 @@ func (ws *WebsocketServer) handleMessage(s *melody.Session, msg []byte) {
 
 	packet.PlayerId = s.MustGet(playerId).(shared.PlayerId)
 	ws.server.PushPacket(&packet)
+}
+
+func (ws *WebsocketServer) handleFetchWorld(w http.ResponseWriter, r *http.Request) {
+	log.Debug().Msg("GET - /world")
+	json, err := json.Marshal(ws.server.galaxy)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		log.Error().Err(err).Msg("unable to marshall galaxy to json")
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(json)
 }

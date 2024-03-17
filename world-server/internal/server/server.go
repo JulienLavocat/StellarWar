@@ -19,9 +19,9 @@ type Server struct {
 	messages   chan *shared.ClientPacket
 }
 
-func NewServer() *Server {
+func NewServer(g galaxy.Galaxy) *Server {
 	return &Server{
-		galaxy:     galaxy.Galaxy{},
+		galaxy:     g,
 		unregister: make(chan shared.PlayerId),
 		messages:   make(chan *shared.ClientPacket),
 		players:    make(map[shared.PlayerId]*Player),

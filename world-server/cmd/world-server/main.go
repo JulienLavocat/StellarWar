@@ -3,6 +3,7 @@ package main
 import (
 	"time"
 
+	"github.com/StellarWar/world-server/internal/galaxy"
 	srv "github.com/StellarWar/world-server/internal/server"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -14,8 +15,21 @@ func main() {
 		w.TimeFormat = "" + time.TimeOnly
 	}))
 
-	server := srv.NewServer()
+	server := srv.NewServer(GenerateMap())
 	go server.Run()
 
 	srv.NewWebsocketServer(server)
+}
+
+func GenerateMap() galaxy.Galaxy {
+	start := time.Now()
+	generator := galaxy.GalaxyGenerator{
+		Width:          200,
+		Height:         200,
+		SystemsDensity: 50,
+		Seed:           "test",
+	}
+	log.Debug().Msgf("Generated galaxy in %s", time.Since(start))
+
+	return generator.Generate()
 }
