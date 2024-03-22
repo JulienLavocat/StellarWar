@@ -3,11 +3,14 @@ name = "spacetime-module"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
-spacetimedb = "0.8.2"
+spacetimedb = { version = "0.8.2", features = ["getrandom"] }
 log = "0.4"
+rand = "0.8.5"
+rand_seeder = "0.2.3"
+fast_poisson = "1.0.0"
+poisson-diskus = "1.0.0"
